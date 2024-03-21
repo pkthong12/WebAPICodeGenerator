@@ -93,6 +93,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("{");
             sb.AppendLine(string.Format("    public interface I{0}Repository: IGenericRepository<{1}, {0}DTO>", PascalName, SNAKE_NAME));
             sb.AppendLine("    {");
+            sb.AppendLine("        Task<FormatedResponse> QueryList(PaginationDTO pagination);");
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
@@ -121,9 +122,19 @@ namespace WebAPICodeGenerator
             sb.AppendLine(string.Format("            _genericRepository = new GenericRepository<{0}, {1}DTO>(_dbContext);", SNAKE_NAME, PascalName));
             sb.AppendLine("        }");
             sb.AppendLine("");
-            sb.AppendLine(string.Format("        public async Task<FormatedResponse> QueryList(long id)", PascalName));
+            sb.AppendLine(string.Format("        public async Task<FormatedResponse> QueryList(PaginationDTO pagination)"));
             sb.AppendLine("        {");
-            sb.AppendLine("            throw new NotImplementedException();");
+            sb.AppendLine(string.Format("            var joined = from p in _dbContext.{0}s.AsNoTracking()", PascalName));
+            sb.AppendLine("                                       //tuy chinh");
+            sb.AppendLine(string.Format("                       select new {0}DTO", PascalName));
+            sb.AppendLine("                        {");
+            sb.AppendLine("                            Id = p.ID,");
+            sb.AppendLine("                        };");
+            sb.AppendLine("         var respose = await _genericRepository.PagingQueryList(joined, pagination);");
+            sb.AppendLine("         return new FormatedResponse");
+            sb.AppendLine("         {");
+            sb.AppendLine("             InnerBody = respose,");
+            sb.AppendLine("         };");
             sb.AppendLine("        }");
             sb.AppendLine("");
             sb.AppendLine("        public async Task<FormatedResponse> GetById(long id)");
@@ -233,9 +244,9 @@ namespace WebAPICodeGenerator
             sb.AppendLine("        }");
             sb.AppendLine("");
             sb.AppendLine("        [HttpPost]");
-            sb.AppendLine(string.Format("        public async Task<IActionResult> QueryList(long id)", PascalName));
+            sb.AppendLine(string.Format("        public async Task<IActionResult> QueryList(PaginationDTO pagination)", PascalName));
             sb.AppendLine("        {");
-            sb.AppendLine(string.Format("            var response = await _{0}Repository.QueryList(id);", PascalName));
+            sb.AppendLine(string.Format("            var response = await _{0}Repository.QueryList(pagination);", PascalName));
             sb.AppendLine("            return Ok(response);");
             sb.AppendLine("        }");
             sb.AppendLine("");
