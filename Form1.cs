@@ -8,14 +8,13 @@ namespace WebAPICodeGenerator
         List<string> mylist =
                 new(new string[] { "AD_", "AT_", "CSS_", "HRM_", "HU_","TR_",
                     "INS_", "PA_", "PT_", "RC_", "RPT_", "SE_", "SY_",
-                    "SYS_", "THEME_", "TMP_" });
+                    "SYS_", "THEME_", "TMP_","PER_" });
         List<string> SYSTEM_list =
                 new(new string[] { "AD_", "CSS_", "HRM_",
                     "SE_", "SY_",
                     "SYS_", "THEME_" });
         List<string> HU_list =
-                new(new string[] { "HU_",
-                    "PT_", "RPT_" });
+                new(new string[] { "PER_" });
         List<string> AT_list =
                 new(new string[] { "AT_" });
 
@@ -68,7 +67,7 @@ namespace WebAPICodeGenerator
             if (myPath == "") return;
 
             using SqlConnection connection = new (
-                       "Password=MatKhau@123;User ID=sa;Initial Catalog=HISTAFF_SQL_DEV;Data Source=101.99.15.217,1433;TrustServerCertificate=True");
+                       "Password=MatKhau@123;User ID=sa;Initial Catalog=GYM_SQL_DEV;Data Source=101.99.15.217,1433;TrustServerCertificate=True");
 
             SqlCommand command = new(
                 @"SELECT TableName = name 
@@ -121,7 +120,7 @@ namespace WebAPICodeGenerator
                     }
                     else if (HU_list.IndexOf(prefix) == 0)
                     {
-                        moduleName = "PROFILE";
+                        moduleName = "PERSONAL";
                     }
                     else if (AT_list.IndexOf(prefix) == 0)
                     {
