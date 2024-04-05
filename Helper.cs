@@ -93,7 +93,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("{");
             sb.AppendLine(string.Format("    public interface I{0}Repository: IGenericRepository<{1}, {0}DTO>", PascalName, SNAKE_NAME));
             sb.AppendLine("    {");
-            sb.AppendLine("        Task<FormatedResponse> QueryList(PaginationDTO pagination);");
+            sb.AppendLine(string.Format("        Task<FormatedResponse> QueryList(PaginationDTO<{0}DTO> pagination)", PascalName));
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
@@ -122,7 +122,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine(string.Format("            _genericRepository = new GenericRepository<{0}, {1}DTO>(_dbContext);", SNAKE_NAME, PascalName));
             sb.AppendLine("        }");
             sb.AppendLine("");
-            sb.AppendLine(string.Format("        public async Task<FormatedResponse> QueryList(PaginationDTO pagination)"));
+            sb.AppendLine(string.Format("        public async Task<FormatedResponse> QueryList(PaginationDTO<{0}DTO> pagination)", PascalName));
             sb.AppendLine("        {");
             sb.AppendLine(string.Format("            var joined = from p in _dbContext.{0}s.AsNoTracking()", PascalName));
             sb.AppendLine("                                       //tuy chinh");
@@ -245,7 +245,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("        }");
             sb.AppendLine("");
             sb.AppendLine("        [HttpPost]");
-            sb.AppendLine(string.Format("        public async Task<IActionResult> QueryList(PaginationDTO pagination)", PascalName));
+            sb.AppendLine(string.Format("        public async Task<IActionResult> QueryList(PaginationDTO<{0}DTO> pagination)", PascalName));
             sb.AppendLine("        {");
             sb.AppendLine(string.Format("            var response = await _{0}Repository.QueryList(pagination);", PascalName));
             sb.AppendLine("            return Ok(response);");
