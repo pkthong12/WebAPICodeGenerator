@@ -93,7 +93,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("{");
             sb.AppendLine(string.Format("    public interface I{0}Repository: IGenericRepository<{1}, {0}DTO>", PascalName, SNAKE_NAME));
             sb.AppendLine("    {");
-            sb.AppendLine(string.Format("        Task<FormatedResponse> QueryList(PaginationDTO<{0}DTO> pagination)", PascalName));
+            sb.AppendLine(string.Format("        Task<FormatedResponse> QueryList(PaginationDTO<{0}DTO> pagination);", PascalName));
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
