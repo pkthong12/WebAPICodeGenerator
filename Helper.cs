@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -7,6 +8,8 @@ namespace WebAPICodeGenerator
 {
     public static class Helper
     {
+        public static string TABLE_CATALOG = "DB_AA775C_CUZEMM";
+        public static string TABLE_SCHEMA = "DBO";
 
         public static string GetTablePrefix(this string tableName)
         {
@@ -200,7 +203,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("            var response = await _genericRepository.DeleteIds(ids);");
             sb.AppendLine("            return response;");
             sb.AppendLine("        }");
-            sb.AppendLine("");            
+            sb.AppendLine("");
             sb.AppendLine("        public async Task<FormatedResponse> ToggleActiveIds(List<long> ids, bool valueToBind, string sid)");
             sb.AppendLine("        {");
             sb.AppendLine("            throw new NotImplementedException();");
@@ -225,6 +228,41 @@ namespace WebAPICodeGenerator
             sb.AppendLine("    {");
             sb.AppendLine("    }");
             sb.AppendLine("}");
+
+            return sb.ToString();
+        }
+        public static string GeneratePropEntityClass(string SNAKE_NAME, string PascalName)
+        {
+            StringBuilder sb = new();
+
+            using SqlConnection connection = new(
+                       "Password=MatKhau@123;User ID=sa;Initial Catalog=GYM_SQL_DEV;Data Source=101.99.15.217,1433;TrustServerCertificate=True");
+
+            SqlCommand command = new(
+                @"SELECT 'public ' + DATA_TYPE DATA_TYPE, COLUMN_NAME , ' { get; set; }' GET_SET
+                    FROM (
+                       SELECT
+                          CASE WHEN C.DATA_TYPE IN ('CHAR', 'VARCHAR', 'NVARCHAR') THEN 'string?'
+                               WHEN C.DATA_TYPE IN ('INT', 'TINYINT') THEN 'int?'
+                               WHEN C.DATA_TYPE IN ('DATETIME','DATETIME2') THEN 'Datetime?'
+		                       WHEN C.DATA_TYPE IN ('BIT') THEN 'bool?'
+		                       WHEN C.DATA_TYPE IN ('BIGINT') THEN 'long?'
+                               ELSE CONCAT(C.DATA_TYPE,'?') 
+                          END AS DATA_TYPE 
+                       , C.COLUMN_NAME
+                       FROM INFORMATION_SCHEMA.COLUMNS C
+                       WHERE TABLE_CATALOG = 'DB_AA775C_CUZEMM'
+                          AND TABLE_SCHEMA = 'DBO'
+                          AND TABLE_NAME = 'FIN_CASH_REPORT'
+                    ) DATA
+                    WHERE DATA.COLUMN_NAME NOT IN ('ID','UPDATED_BY','CREATED_BY','CREATED_DATE','UPDATED_DATE')
+                    ORDER BY LEN(DATA.DATA_TYPE)", connection);
+            SqlDataAdapter da = new(command);
+            DataSet ds = new();
+            da.Fill(ds);
+            DataTable dt = ds.Tables[0];
+            var a = Helper.ConvertDataTable<MyTable>(dt);
+
 
             return sb.ToString();
         }
@@ -334,7 +372,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine(string.Format("            var response = await _{0}Repository.DeleteIds(model.Ids);", PascalName));
             sb.AppendLine("            return Ok(response);");
             sb.AppendLine("        }");
-            sb.AppendLine("");            
+            sb.AppendLine("");
             sb.AppendLine("        [HttpPost]");
             sb.AppendLine("        public async Task<IActionResult> ToggleActiveIds(GenericToggleIsActiveDTO model)");
             sb.AppendLine("        {");
@@ -367,10 +405,10 @@ namespace WebAPICodeGenerator
                 string EntityName = table.TableName;
                 sb.AppendLine(
                     string.Format(
-                        "        public DbSet<{0}> {1}s {2} get; set; {3}", 
-                        EntityName, 
+                        "        public DbSet<{0}> {1}s {2} get; set; {3}",
+                        EntityName,
                         EntityName.SnakeToCamelCase().CamelToPascalCase(),
-                        "{", 
+                        "{",
                         "}"));
                 sb.AppendLine("");
             });

@@ -136,7 +136,7 @@ namespace WebAPICodeGenerator
                     }
                     else if (ORD_list.IndexOf(prefix) == 0)
                     {
-                        moduleName = "CARD";
+                        moduleName = "ORD";
                     }
                     else if (GOODS_list.IndexOf(prefix) == 0)
                     {
