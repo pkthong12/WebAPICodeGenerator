@@ -8,7 +8,7 @@ namespace WebAPICodeGenerator
 {
     public static class Helper
     {
-        public static string TABLE_CATALOG = "DB_AA775C_CUZEMM";
+        public static string TABLE_CATALOG = "GYM_SQL_DEV";
         public static string TABLE_SCHEMA = "DBO";
 
         public static string GetTablePrefix(this string tableName)
@@ -226,6 +226,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine(string.Format("    [Table(\"{0}\")]", SNAKE_NAME));
             sb.AppendLine(string.Format("    public class {0} : BASE_ENTITY", SNAKE_NAME));
             sb.AppendLine("    {");
+            sb.AppendLine(GeneratePropEntityClass(SNAKE_NAME, PascalName));
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
@@ -237,32 +238,45 @@ namespace WebAPICodeGenerator
 
             using SqlConnection connection = new(
                        "Password=MatKhau@123;User ID=sa;Initial Catalog=GYM_SQL_DEV;Data Source=101.99.15.217,1433;TrustServerCertificate=True");
-
-            SqlCommand command = new(
-                @"SELECT 'public ' + DATA_TYPE DATA_TYPE, COLUMN_NAME , ' { get; set; }' GET_SET
-                    FROM (
-                       SELECT
-                          CASE WHEN C.DATA_TYPE IN ('CHAR', 'VARCHAR', 'NVARCHAR') THEN 'string?'
-                               WHEN C.DATA_TYPE IN ('INT', 'TINYINT') THEN 'int?'
-                               WHEN C.DATA_TYPE IN ('DATETIME','DATETIME2') THEN 'Datetime?'
-		                       WHEN C.DATA_TYPE IN ('BIT') THEN 'bool?'
-		                       WHEN C.DATA_TYPE IN ('BIGINT') THEN 'long?'
-                               ELSE CONCAT(C.DATA_TYPE,'?') 
-                          END AS DATA_TYPE 
-                       , C.COLUMN_NAME
-                       FROM INFORMATION_SCHEMA.COLUMNS C
-                       WHERE TABLE_CATALOG = 'DB_AA775C_CUZEMM'
-                          AND TABLE_SCHEMA = 'DBO'
-                          AND TABLE_NAME = 'FIN_CASH_REPORT'
-                    ) DATA
-                    WHERE DATA.COLUMN_NAME NOT IN ('ID','UPDATED_BY','CREATED_BY','CREATED_DATE','UPDATED_DATE')
-                    ORDER BY LEN(DATA.DATA_TYPE)", connection);
+            var comd = "SELECT 'public ' + DATA_TYPE DATA_TYPE, COLUMN_NAME , ' { get; set; }' GET_SET FROM ( SELECT CASE WHEN C.DATA_TYPE IN ('CHAR', 'VARCHAR', 'NVARCHAR') THEN 'string?' WHEN C.DATA_TYPE IN ('INT', 'TINYINT') THEN 'int?' WHEN C.DATA_TYPE IN ('DATETIME','DATETIME2') THEN 'DateTime?' WHEN C.DATA_TYPE IN ('BIT') THEN 'bool?' WHEN C.DATA_TYPE IN ('BIGINT') THEN 'long?' ELSE CONCAT(C.DATA_TYPE,'?') END AS DATA_TYPE , C.COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS C WHERE TABLE_CATALOG = '"+ TABLE_CATALOG + "' AND TABLE_SCHEMA = 'DBO' AND TABLE_NAME = '" + SNAKE_NAME + "' ) DATA WHERE DATA.COLUMN_NAME NOT IN ('ID','UPDATED_BY','CREATED_BY','CREATED_DATE','UPDATED_DATE') ORDER BY LEN(DATA.DATA_TYPE)";
+            SqlCommand command = new(comd, connection);
             SqlDataAdapter da = new(command);
             DataSet ds = new();
             da.Fill(ds);
             DataTable dt = ds.Tables[0];
-            var a = Helper.ConvertDataTable<MyTable>(dt);
+            if(dt.Rows.Count > 0)
+            {
+                var a = Helper.ConvertDataTable<Properties>(dt);
+                a.ForEach(x =>
+                {
+                    sb.AppendLine(string.Format("       {0} {1} {2}",x.DATA_TYPE,x.COLUMN_NAME,x.GET_SET));
+                    sb.AppendLine("");
+                });
+            }
 
+            return sb.ToString();
+        }
+        public static string GeneratePropDtoClass(string SNAKE_NAME, string PascalName)
+        {
+            StringBuilder sb = new();
+
+            using SqlConnection connection = new(
+                       "Password=MatKhau@123;User ID=sa;Initial Catalog=GYM_SQL_DEV;Data Source=101.99.15.217,1433;TrustServerCertificate=True");
+            var comd = "SELECT 'public ' + DATA_TYPE DATA_TYPE, COLUMN_NAME , ' { get; set; }' GET_SET FROM ( SELECT CASE WHEN C.DATA_TYPE IN ('CHAR', 'VARCHAR', 'NVARCHAR') THEN 'string?' WHEN C.DATA_TYPE IN ('INT', 'TINYINT') THEN 'int?' WHEN C.DATA_TYPE IN ('DATETIME','DATETIME2') THEN 'DateTime?' WHEN C.DATA_TYPE IN ('BIT') THEN 'bool?' WHEN C.DATA_TYPE IN ('BIGINT') THEN 'long?' ELSE CONCAT(C.DATA_TYPE,'?') END AS DATA_TYPE , C.COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS C WHERE TABLE_CATALOG = '" + TABLE_CATALOG + "' AND TABLE_SCHEMA = 'DBO' AND TABLE_NAME = '" + SNAKE_NAME + "' ) DATA WHERE DATA.COLUMN_NAME NOT IN ('ID','UPDATED_BY','CREATED_BY','CREATED_DATE','UPDATED_DATE') ORDER BY LEN(DATA.DATA_TYPE)";
+            SqlCommand command = new(comd, connection);
+            SqlDataAdapter da = new(command);
+            DataSet ds = new();
+            da.Fill(ds);
+            DataTable dt = ds.Tables[0];
+            if (dt.Rows.Count > 0)
+            {
+                var a = Helper.ConvertDataTable<Properties>(dt);
+                a.ForEach(x =>
+                {
+                    sb.AppendLine(string.Format("       {0} {1} {2}", x.DATA_TYPE, SnakeToCamelCase(x.COLUMN_NAME!), x.GET_SET));
+                    sb.AppendLine("");
+                });
+            }
 
             return sb.ToString();
         }
@@ -274,6 +288,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("{");
             sb.AppendLine(string.Format("    public class {0}DTO : BaseDTO", PascalName));
             sb.AppendLine("    {");
+            sb.AppendLine(GeneratePropDtoClass(SNAKE_NAME, PascalName));
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
