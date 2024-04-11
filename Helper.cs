@@ -273,7 +273,7 @@ namespace WebAPICodeGenerator
                 var a = Helper.ConvertDataTable<Properties>(dt);
                 a.ForEach(x =>
                 {
-                    sb.AppendLine(string.Format("       {0} {1} {2}", x.DATA_TYPE, SnakeToCamelCase(x.COLUMN_NAME!), x.GET_SET));
+                    sb.AppendLine(string.Format("       {0} {1} {2}", x.DATA_TYPE, CamelToPascalCase(SnakeToCamelCase(x.COLUMN_NAME!)) , x.GET_SET));
                     sb.AppendLine("");
                 });
             }
