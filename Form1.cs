@@ -16,17 +16,17 @@ namespace WebAPICodeGenerator
         List<string> AT_list =
                 new(new string[] { "AT_" });
 
-        List<string> PA_list =
-                new(new string[] { "PA_" });
+        List<string> FIN_list =
+                new(new string[] { "FIN_" });
 
-        List<string> INS_list =
-        new(new string[] { "INS_" });
+        List<string> GOODS_list =
+                new(new string[] { "GOODS_" });
 
-        List<string> TR_list =
-        new(new string[] { "TR_", });
+        List<string>    CARD_list =
+        new(new string[] { "CARD_", });
 
-        List<string> RE_list =
-                new(new string[] { "RC_" });
+        List<string> ORD_list =
+                new(new string[] { "ORD_" });
         List<string> LOC_list =
         new(new string[] { "LOC_" });
 
@@ -122,29 +122,25 @@ namespace WebAPICodeGenerator
                     {
                         moduleName = "PERSONAL";
                     }
-                    else if (AT_list.IndexOf(prefix) == 0)
+                    else if (FIN_list.IndexOf(prefix) == 0)
                     {
-                        moduleName = "ATTENDANCE";
-                    }
-                    else if (PA_list.IndexOf(prefix) == 0)
-                    {
-                        moduleName = "PAYROLL";
-                    }
-                    else if (INS_list.IndexOf(prefix) == 0)
-                    {
-                        moduleName = "INSURANCE";
-                    }
-                    else if (RE_list.IndexOf(prefix) == 0)
-                    {
-                        moduleName = "RECRUITMENT";
-                    }
-                    else if (TR_list.IndexOf(prefix) == 0)
-                    {
-                        moduleName = "TRAINING";
+                        moduleName = "FINANCE";
                     }
                     else if (LOC_list.IndexOf(prefix) == 0)
                     {
                         moduleName = "LOCKER";
+                    }
+                    else if (CARD_list.IndexOf(prefix) == 0)
+                    {
+                        moduleName = "CARD";
+                    }
+                    else if (ORD_list.IndexOf(prefix) == 0)
+                    {
+                        moduleName = "CARD";
+                    }
+                    else if (GOODS_list.IndexOf(prefix) == 0)
+                    {
+                        moduleName = "GOODS";
                     }
                     else 
                     {
