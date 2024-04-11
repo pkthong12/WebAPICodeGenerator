@@ -212,6 +212,35 @@ namespace WebAPICodeGenerator
             return sb.ToString();
         }
 
+        public static string GenerateEntityClass(string SNAKE_NAME, string PascalName)
+        {
+            StringBuilder sb = new();
+
+            sb.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
+            sb.AppendLine("");
+            sb.AppendLine("namespace GYM_BE.Entities");
+            sb.AppendLine("{");
+            sb.AppendLine(string.Format("    [Table(\"{0}\")]", SNAKE_NAME));
+            sb.AppendLine(string.Format("    public class {0} : BASE_ENTITY", SNAKE_NAME));
+            sb.AppendLine("    {");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            return sb.ToString();
+        }
+        public static string GenerateDtoClass(string SNAKE_NAME, string PascalName)
+        {
+            StringBuilder sb = new();
+
+            sb.AppendLine("namespace GYM_BE.DTO");
+            sb.AppendLine("{");
+            sb.AppendLine(string.Format("    public class {0}DTO : BaseDTO", PascalName));
+            sb.AppendLine("    {");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            return sb.ToString();
+        }
         public static string GenerateControllerClass(string SNAKE_NAME, string PascalName, string TwoDigitIndex, string ModuleCode)
         {
             StringBuilder sb = new();

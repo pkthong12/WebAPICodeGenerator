@@ -153,6 +153,9 @@ namespace WebAPICodeGenerator
                 }
 
                 var controllerFile = Helper.GenerateControllerClass(SNAKE_NAME, PascalName, ThreeDiditIndex, moduleName);
+                var dto = Helper.GenerateDtoClass(SNAKE_NAME, PascalName);
+
+                var entity = Helper.GenerateEntityClass(SNAKE_NAME, PascalName);
 
                 using (StreamWriter file = new(string.Format("{0}\\{1}\\I{1}Repository.cs", myPath, PascalName)))
                 {
@@ -167,6 +170,15 @@ namespace WebAPICodeGenerator
                     file.WriteLine(controllerFile);
                 }
 
+
+                using (StreamWriter file = new(string.Format("{0}\\{1}\\{2}.cs", myPath, PascalName, SNAKE_NAME)))
+                {
+                    file.WriteLine(entity);
+                }
+                using (StreamWriter file = new(string.Format("{0}\\{1}\\{1}DTO.cs", myPath, PascalName)))
+                {
+                    file.WriteLine(dto);
+                }
             });
 
             MessageBox.Show("Done!", "Happy Coding!");
