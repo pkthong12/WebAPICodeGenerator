@@ -112,6 +112,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("using GYM_BE.Core.Generic;");
             sb.AppendLine("using GYM_BE.DTO;");
             sb.AppendLine("using GYM_BE.Entities;");
+            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("");
             sb.AppendLine(string.Format("namespace GYM_BE.All.{0}", PascalName));
             sb.AppendLine("{");
@@ -194,6 +195,12 @@ namespace WebAPICodeGenerator
             sb.AppendLine("        }");
             sb.AppendLine("");
             sb.AppendLine("        public async Task<FormatedResponse> Delete(long id)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var response = await _genericRepository.Delete(id);");
+            sb.AppendLine("            return response;");
+            sb.AppendLine("        }");
+            sb.AppendLine("");            
+            sb.AppendLine("        public async Task<FormatedResponse> Delete(string id)");
             sb.AppendLine("        {");
             sb.AppendLine("            var response = await _genericRepository.Delete(id);");
             sb.AppendLine("            return response;");
