@@ -88,6 +88,7 @@ namespace WebAPICodeGenerator
         {
             StringBuilder sb = new();
 
+            sb.AppendLine("using GYM_BE.Core.Dto;");
             sb.AppendLine("using GYM_BE.Core.Generic;");
             sb.AppendLine("using GYM_BE.DTO;");
             sb.AppendLine("using GYM_BE.Entities;");
