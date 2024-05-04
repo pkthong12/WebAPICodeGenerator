@@ -319,6 +319,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("{");
             sb.AppendLine(string.Format("    [ApiExplorerSettings(GroupName = \"{0}-{1}-{2}\")]", TwoDigitIndex, ModuleCode, SNAKE_NAME));
             sb.AppendLine("    [ApiController]");
+            sb.AppendLine("    [GymAuthorize]");
             sb.AppendLine("    [Route(\"api/[controller]/[action]\")]");
             sb.AppendLine(string.Format("    public class {0}Controller : Controller", PascalName));
             sb.AppendLine("    {");
