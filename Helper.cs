@@ -309,6 +309,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("using API;");
             sb.AppendLine("using GYM_BE.Core.Dto;");
             sb.AppendLine("using GYM_BE.DTO;");
+            sb.AppendLine("using GYM_BE.Main;");
             sb.AppendLine("using GYM_BE.Entities;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
@@ -368,6 +369,8 @@ namespace WebAPICodeGenerator
             sb.AppendLine("        [HttpPost]");
             sb.AppendLine(string.Format("        public async Task<IActionResult> Update({0}DTO model)", PascalName));
             sb.AppendLine("        {");
+            sb.AppendLine("             var sid = Request.Sid(_appSettings);");
+            sb.AppendLine("             if (sid == null) return Unauthorized();");
             sb.AppendLine(string.Format("            var response = await _{0}Repository.Update(model, sid);", PascalName));
             sb.AppendLine("            return Ok(response);");
             sb.AppendLine("        }");
