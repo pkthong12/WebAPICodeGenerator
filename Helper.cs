@@ -314,6 +314,7 @@ namespace WebAPICodeGenerator
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine("using Microsoft.Extensions.Options;");
+            sb.AppendLine("using GYM_BE.All.System.Common.Middleware;");
             sb.AppendLine("");
             sb.AppendLine(string.Format("namespace GYM_BE.All.{0}", PascalName));
             sb.AppendLine("{");
